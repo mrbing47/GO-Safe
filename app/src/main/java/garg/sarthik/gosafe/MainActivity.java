@@ -2,14 +2,23 @@ package garg.sarthik.gosafe;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -21,13 +30,20 @@ import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, LocationListener {
 
     public static final int requestCodeForPermission = 12345;
+    public static final String CHANNEL_ID = "420";
+
     LocationManager locationManager;
+    NotificationManager notificationManager;
+
     ArrayList<AccidentData> accidentDataArrayList = new ArrayList<>();
 
     TextView tvCity;
@@ -41,7 +57,7 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         tvAddress = findViewById(R.id.tvAddress);
@@ -60,13 +76,13 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        accidentDataArrayList.add(new AccidentData("Delhi", "Delhi", "Dilshad Garden", 20));
-        accidentDataArrayList.add(new AccidentData("Delhi", "Delhi", "Connaught Place", 23));
-        accidentDataArrayList.add(new AccidentData("Delhi", "Delhi", "Rithala", 25));
-        accidentDataArrayList.add(new AccidentData("Delhi", "Delhi", "Chandni Chowk", 55));
-        accidentDataArrayList.add(new AccidentData("Uttar Pradesh", "Ghaziabad", "Indrapuram", 30));
-        accidentDataArrayList.add(new AccidentData("Uttar Pradesh", "Ghaziabad", "Vaishali", 20));
-        accidentDataArrayList.add(new AccidentData("Uttar Pradesh", "Ghaziabad", "Mohan Nagar", 51));
+        accidentDataArrayList.add(new AccidentData("Delhi", "Delhi", "Dilshad Garden",28.68,77.31, 20));
+        accidentDataArrayList.add(new AccidentData("Delhi", "Delhi", "Connaught Place",28.63,77.21, 23));
+        accidentDataArrayList.add(new AccidentData("Delhi", "Delhi", "Rithala",28.73,77.11, 25));
+        accidentDataArrayList.add(new AccidentData("Delhi", "Delhi", "Chandni Chowk",28.65,77.22, 55));
+        accidentDataArrayList.add(new AccidentData("Uttar Pradesh", "Ghaziabad", "Indrapuram",28.63,77.36, 30));
+        accidentDataArrayList.add(new AccidentData("Uttar Pradesh", "Ghaziabad", "Vaishali",28.64,77.33, 20));
+        accidentDataArrayList.add(new AccidentData("Uttar Pradesh", "Ghaziabad", "Mohan Nagar",28.67,77.39, 51));
 
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
@@ -79,19 +95,15 @@ public class MainActivity extends AppCompatActivity
             if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                 Toast.makeText(this, "Location is not enabled", Toast.LENGTH_SHORT).show();
             } else {
-
                 locationSuccess();
             }
-
         }
-
-
     }
 
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -107,7 +119,7 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.about_us) {
             return true;
         }
 
@@ -120,21 +132,17 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
+        if (id == R.id.dashboard) {
             // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        } else if (id == R.id.emergency_contacts) {
 
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.near_by_places) {
 
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+        } else if (id == R.id.about_us){
+            
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
@@ -142,43 +150,51 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onLocationChanged(Location location) {
 
-        /*Geocoder geocoder;
-        List<Address> addresses;
-        geocoder = new Geocoder(this, Locale.getDefault());*/
+        double latitude = Double.valueOf((""+location.getLatitude()).substring(0,5));
+        double longitude = Double.valueOf((""+location.getLongitude()).substring(0,5));
 
-        Log.e("TAG", "long: " + location.getLongitude());
-        Log.e("TAG", "lat " + location.getLatitude());
-        tvAddress.setText("" + location.getLatitude());
-        tvCity.setText("" + location.getLongitude());
+        Log.e("TAG", "long: " + longitude);
+        Log.e("TAG", "lat " + latitude);
 
-       /* try {
-            addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
-            String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
-            String city = addresses.get(0).getLocality();
-            String state = addresses.get(0).getAdminArea();
-            String country = addresses.get(0).getCountryName();
-            String postalCode = addresses.get(0).getPostalCode();
-            String knownName = addresses.get(0).getFeatureName();
+        tvPostalCOde.setText(""+latitude);
+        tvKnownName.setText(""+longitude);
 
-
-            tvState.setText(state);
-            tvPostalCOde.setText(postalCode);
-            tvKnownName.setText(knownName);
-            tvCountry.setText(country);
-            tvCity.setText(city);
-            tvAddress.setText(address);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (IndexOutOfBoundsException e)
+        for(AccidentData data: accidentDataArrayList)
         {
-            Log.e("TAG", "FUCK");
-            e.printStackTrace();
-        }*/
+            Log.e("TAG", "for lat: " + data.getLocality());
+            if(longitude == data.getLongitude() && latitude == data.getLatitude())
+            {
+                tvAddress.setText(""+data.getPercentage());
+                tvCity.setText(data.getCity());
+                tvState.setText(data.getState());
+                tvCountry.setText(data.getLocality());
 
-       /* for(AccidentData data: accidentDataArrayList)
-        {
+                if(data.getPercentage() >= 50) {
+                    notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
-        }*/
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                        NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ID,
+                                "Default Channel",
+                                NotificationManager.IMPORTANCE_DEFAULT);
+                        notificationManager.createNotificationChannel(notificationChannel);
+                    }
+
+                    Intent intent = new Intent(MainActivity.this, MainActivity.class);
+
+                    PendingIntent pendingIntent = PendingIntent.getActivities(MainActivity.this, 123, new Intent[]{intent}, PendingIntent.FLAG_UPDATE_CURRENT);
+
+                    Notification notification = new NotificationCompat.Builder(MainActivity.this, CHANNEL_ID)
+                            .setSmallIcon(R.drawable.ic_warning)
+                            .setContentTitle("DRIVE SAFE")
+                            .setContentText("You are at " + data.getLocality() + " where the accident rate is " + data.getPercentage() + "%.")
+                            .setContentIntent(pendingIntent)
+                            .setAutoCancel(true)
+                            .build();
+                    notificationManager.notify(101, notification);
+                }
+                break;
+            }
+        }
 
     }
 
