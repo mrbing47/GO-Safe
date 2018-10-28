@@ -139,7 +139,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.near_by_places) {
 
         } else if (id == R.id.about_us){
-            
+
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
