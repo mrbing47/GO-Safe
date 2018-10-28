@@ -1,6 +1,5 @@
 package garg.sarthik.gosafe.db;
 
-
 import android.arch.persistence.room.Database;
 import android.arch.persistence.room.RoomDatabase;
 

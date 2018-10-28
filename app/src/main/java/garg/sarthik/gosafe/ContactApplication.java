@@ -20,7 +20,6 @@ public class ContactApplication extends Application {
         contactDataBase = Room.databaseBuilder(getApplicationContext(),
                 ContactDataBase.class,
                 "contact-db")
-                //Thia is not a good practice bcoz never run it on the UI thread
                 .allowMainThreadQueries()
                 .fallbackToDestructiveMigration()
                 .build();

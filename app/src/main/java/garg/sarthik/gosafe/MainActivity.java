@@ -127,7 +127,7 @@ public class MainActivity extends AppCompatActivity
                 case 0:
                     return new Frag_Dashboard();
                 case 1:
-                    return new Frag_EmergencyContact();
+                    return new Frag_EmergencyContact().newInstance(latitude,longitude);
                 case 2:
                     return new Frag_NearPlaces();
             }

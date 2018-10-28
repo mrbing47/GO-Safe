@@ -3,8 +3,11 @@ package garg.sarthik.gosafe;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +20,17 @@ public class ContactAdaptor extends RecyclerView.Adapter<ContactAdaptor.ViewHold
 
     List<ContactData> contactDataList;
     Context ctx;
+    double latitude;
+    double longitude;
+    boolean isLatLongOk;
+
+    public ContactAdaptor(List<ContactData> contactDataList, Context ctx, double latitude, double longitude, boolean isLatLongOk) {
+        this.contactDataList = contactDataList;
+        this.ctx = ctx;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.isLatLongOk = isLatLongOk;
+    }
 
     @NonNull
     @Override
@@ -33,7 +47,7 @@ public class ContactAdaptor extends RecyclerView.Adapter<ContactAdaptor.ViewHold
         holder.tvName.setText(contactData.getName());
 
         final AlertDialog alertDialog_Bookmark = new AlertDialog.Builder(ctx)
-                .setTitle("DO YOU WANT TO DELETE THIS NEWS?")
+                .setTitle("DO YOU WANT TO DELETE THIS CONTACT?")
                 .setPositiveButton("YES", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -56,6 +70,21 @@ public class ContactAdaptor extends RecyclerView.Adapter<ContactAdaptor.ViewHold
             public boolean onLongClick(View v) {
                 alertDialog_Bookmark.show();
                 return true;
+            }
+        });
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(isLatLongOk)
+                {
+                    String message = "Hello,I am in Danger\n\nMy current location is: "+"http://maps.google.com/maps?f=q&q=("+latitude+","+longitude+")"+"\nReach out to me as soon as possible";
+
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("sms:" + contactData.getNumber()));
+                    intent.putExtra("sms_body", message);
+                    ctx.startActivity(intent);
+                }
+                else
+                    Toast.makeText(ctx,"Location Not Valid",Toast.LENGTH_LONG).show();
             }
         });
     }
