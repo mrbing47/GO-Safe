@@ -52,7 +52,7 @@ public class ContactAdaptor extends RecyclerView.Adapter<ContactAdaptor.ViewHold
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
-                        ContactApplication.getDB().getContactDAO().deleteContactData(contactData);
+                       // ContactApplication.getDB().getContactDAO().deleteContactData(contactData);
                         contactDataList.remove(position);
                         notifyDataSetChanged();
                         Toast.makeText(ctx, "CONTACT REMOVED", Toast.LENGTH_SHORT).show();
@@ -78,7 +78,6 @@ public class ContactAdaptor extends RecyclerView.Adapter<ContactAdaptor.ViewHold
                 if(isLatLongOk)
                 {
                     String message = "Hello,I am in Danger\n\nMy current location is: "+"http://maps.google.com/maps?f=q&q=("+latitude+","+longitude+")"+"\nReach out to me as soon as possible";
-
                     Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("sms:" + contactData.getNumber()));
                     intent.putExtra("sms_body", message);
                     ctx.startActivity(intent);

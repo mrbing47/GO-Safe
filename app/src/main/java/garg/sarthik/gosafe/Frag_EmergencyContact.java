@@ -1,6 +1,8 @@
 package garg.sarthik.gosafe;
 
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,7 +16,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -28,6 +32,13 @@ public class Frag_EmergencyContact extends Fragment {
     EditText etName;
     EditText etNumber;
     RecyclerView rvContacts;
+
+    ImageButton btnPolice;
+    ImageButton btnAmbulance;
+    ImageButton btnWomen;
+    ImageButton btnFire;
+    ImageButton btnChild;
+    ImageButton btnDisaster;
 
     Fragment newInstance(double latitude, double longitude) {
 
@@ -50,6 +61,13 @@ public class Frag_EmergencyContact extends Fragment {
             Log.e("TAG", "Array Is Empty");
         }
         fabAdd = view.findViewById(R.id.fabAdd);
+        btnAmbulance = view.findViewById(R.id.ambulance);
+        btnPolice = view.findViewById(R.id.police);
+        btnChild = view.findViewById(R.id.child_care);
+        btnDisaster = view.findViewById(R.id.disaster);
+        btnFire = view.findViewById(R.id.fireBrigade);
+        btnWomen = view.findViewById(R.id.women);
+
         rvContacts = view.findViewById(R.id.rvContacts);
         rvContacts.setLayoutManager(new LinearLayoutManager(getContext()));
 
@@ -73,19 +91,16 @@ public class Frag_EmergencyContact extends Fragment {
 
                         String name = etName.getText().toString();
                         String number = etNumber.getText().toString();
+                        etNumber.setText("");
+                        etName.setText("");
 
-                        if(number.length() == 10) {
+                        if (number.length() == 10) {
                             ContactData contactData = new ContactData(name, number);
                             contactDataList.add(contactData);
-                            ContactApplication.getDB().getContactDAO().inertTask(contactData);
-                            if (getArguments() != null)
-                                contactAdaptor = new ContactAdaptor(contactDataList, getContext(), getArguments().getDouble("lat"), getArguments().getDouble("long"), true);
-                            else
-                                contactAdaptor = new ContactAdaptor(contactDataList, getContext(), 0, 0, false);
-                            rvContacts.setAdapter(contactAdaptor);
-                        }
-                        else
-                            Snackbar.make(view,"Invalid Number",Toast.LENGTH_SHORT).show();
+                           // ContactApplication.getDB().getContactDAO().inertTask(contactData);
+                            contactAdaptor.notifyDataSetChanged();
+                        } else
+                            Snackbar.make(view, "Invalid Number", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .create();
@@ -96,6 +111,68 @@ public class Frag_EmergencyContact extends Fragment {
             }
         });
 
+        btnWomen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String number = "181";
+                Intent intent = new Intent();
+                intent.setData(Uri.parse("tel:"+number));
+                intent.setAction(Intent.ACTION_DIAL);
+                startActivity(intent);
+            }
+        });
+        btnPolice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String number = "100";
+                Intent intent = new Intent();
+                intent.setData(Uri.parse("tel:"+number));
+                intent.setAction(Intent.ACTION_DIAL);
+                startActivity(intent);
+            }
+        });
+        btnDisaster.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String number = "108";
+                Intent intent = new Intent();
+                intent.setData(Uri.parse("tel:"+number));
+                intent.setAction(Intent.ACTION_DIAL);
+                startActivity(intent);
+            }
+        });
+        btnChild.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String number = "1098";
+                Intent intent = new Intent();
+                intent.setData(Uri.parse("tel:"+number));
+                intent.setAction(Intent.ACTION_DIAL);
+                startActivity(intent);
+            }
+        });
+        btnFire.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String number = "101";
+                Intent intent = new Intent();
+                intent.setData(Uri.parse("tel:"+number));
+                intent.setAction(Intent.ACTION_DIAL);
+                startActivity(intent);
+            }
+        });
+        btnAmbulance.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String number = "102";
+                Intent intent = new Intent();
+                intent.setData(Uri.parse("tel:"+number));
+                intent.setAction(Intent.ACTION_DIAL);
+                startActivity(intent);
+            }
+        });
+
         return view;
     }
+
 }

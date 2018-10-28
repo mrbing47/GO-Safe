@@ -12,7 +12,6 @@ import garg.sarthik.gosafe.ContactData;
 @Dao
 public interface ContactDAO {
 
-
     @Query("SELECT * FROM contactdata")
     List<ContactData> getAllContactData();
 
