@@ -40,6 +40,9 @@ public class MainActivity extends AppCompatActivity
 
     public static final int requestCodeForPermission = 12345;
     public static final String CHANNEL_ID = "420";
+    double latitude;
+    double longitude;
+
 
     LocationManager locationManager;
     NotificationManager notificationManager;
@@ -136,6 +139,11 @@ public class MainActivity extends AppCompatActivity
             // Handle the camera action
         } else if (id == R.id.emergency_contacts) {
 
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.frag_container,new Frag_EmergencyContact().newInstance(latitude,longitude))
+                    .commit();
+
         } else if (id == R.id.near_by_places) {
 
         } else if (id == R.id.about_us){
@@ -150,8 +158,8 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onLocationChanged(Location location) {
 
-        double latitude = Double.valueOf((""+location.getLatitude()).substring(0,5));
-        double longitude = Double.valueOf((""+location.getLongitude()).substring(0,5));
+        latitude = Double.valueOf((""+location.getLatitude()).substring(0,5));
+        longitude = Double.valueOf((""+location.getLongitude()).substring(0,5));
 
         Log.e("TAG", "long: " + longitude);
         Log.e("TAG", "lat " + latitude);
