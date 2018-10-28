@@ -1,95 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-<HorizontalScrollView
-    android:layout_width="match_parent"
-    android:layout_height="160dp"
-    android:scrollbarStyle="insideOverlay"
-    >
-
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
 
-        <ImageButton
-            android:id="@+id/police"
-            android:layout_width="100dp"
-            android:layout_height="150dp"
-            android:layout_margin="5dp"
-            android:adjustViewBounds="false"
-            android:background="@drawable/background_dashboard"
-            android:cropToPadding="false"
-            android:scaleType="fitXY"
-            android:src="@drawable/police100"
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="160dp"
+            android:scrollbarStyle="insideOverlay">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp">
+
+                <ImageButton
+                    android:id="@+id/police"
+                    android:layout_width="100dp"
+                    android:layout_height="150dp"
+                    android:layout_margin="5dp"
+                    android:adjustViewBounds="false"
+                    android:background="@drawable/background_dashboard"
+                    android:cropToPadding="false"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/police100" />
+
+                <ImageButton
+                    android:id="@+id/ambulance"
+                    android:layout_width="100dp"
+                    android:layout_height="150dp"
+                    android:layout_margin="5dp"
+                    android:adjustViewBounds="false"
+                    android:background="@drawable/background_dashboard"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/ambulance" />
+
+                <ImageButton
+                    android:id="@+id/fireBrigade"
+                    android:layout_width="100dp"
+                    android:layout_height="150dp"
+                    android:layout_margin="5dp"
+                    android:adjustViewBounds="false"
+                    android:background="#fff"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/fire" />
+
+                <ImageButton
+                    android:id="@+id/women"
+                    android:layout_width="100dp"
+                    android:layout_height="150dp"
+                    android:layout_margin="5dp"
+                    android:adjustViewBounds="false"
+                    android:background="@drawable/background_dashboard"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/women" />
+
+                <ImageButton
+                    android:id="@+id/disaster"
+                    android:layout_width="100dp"
+                    android:layout_height="150dp"
+                    android:layout_margin="5dp"
+                    android:adjustViewBounds="false"
+                    android:background="#fff"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/disaster" />
+
+                <ImageButton
+                    android:id="@+id/child_care"
+                    android:layout_width="100dp"
+                    android:layout_height="150dp"
+                    android:layout_margin="5dp"
+                    android:adjustViewBounds="false"
+                    android:background="#fff"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/child" />
+
+
+            </LinearLayout>
+
+        </HorizontalScrollView>
+
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rvContacts"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             />
-
-        <ImageButton
-            android:id="@+id/ambulance"
-            android:layout_width="100dp"
-            android:layout_height="150dp"
-            android:layout_margin="5dp"
-            android:adjustViewBounds="false"
-            android:background="@drawable/background_dashboard"
-            android:scaleType="fitXY"
-            android:src="@drawable/ambulance"
-            />
-
-        <ImageButton
-            android:id="@+id/fireBrigade"
-            android:layout_width="100dp"
-            android:layout_height="150dp"
-            android:layout_margin="5dp"
-            android:adjustViewBounds="false"
-            android:background="#fff"
-            android:scaleType="fitXY"
-            android:src="@drawable/fire"
-            />
-
-        <ImageButton
-            android:id="@+id/women"
-            android:layout_width="100dp"
-            android:layout_height="150dp"
-            android:layout_margin="5dp"
-            android:adjustViewBounds="false"
-            android:background="@drawable/background_dashboard"
-            android:scaleType="centerCrop"
-            android:src="@drawable/women"
-            />
-
-        <ImageButton
-            android:id="@+id/disaster"
-            android:layout_width="100dp"
-            android:layout_height="150dp"
-            android:layout_margin="5dp"
-            android:adjustViewBounds="false"
-            android:background="#fff"
-            android:scaleType="fitXY"
-            android:src="@drawable/disaster"
-            />
-
-        <ImageButton
-            android:id="@+id/child_care"
-            android:layout_width="100dp"
-            android:layout_height="150dp"
-            android:layout_margin="5dp"
-            android:adjustViewBounds="false"
-            android:background="#fff"
-            android:scaleType="fitXY"
-            android:src="@drawable/child"
-            />
-
-
     </LinearLayout>
-
-</HorizontalScrollView>
-
-<android.support.v7.widget.RecyclerView
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="20dp"
-    />
 
 </ScrollView>

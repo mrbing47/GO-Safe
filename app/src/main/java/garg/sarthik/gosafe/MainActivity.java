@@ -16,11 +16,17 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -36,7 +42,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, LocationListener {
+        implements  LocationListener {
 
     public static final int requestCodeForPermission = 12345;
     public static final String CHANNEL_ID = "420";
@@ -60,8 +66,6 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
         tvAddress = findViewById(R.id.tvAddress);
         tvCity = findViewById(R.id.tvCity);
@@ -69,15 +73,6 @@ public class MainActivity extends AppCompatActivity
         tvKnownName = findViewById(R.id.tvKnownName);
         tvPostalCOde = findViewById(R.id.tvPostalCOde);
         tvState = findViewById(R.id.tvState);
-
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
 
         accidentDataArrayList.add(new AccidentData("Delhi", "Delhi", "Dilshad Garden",28.68,77.31, 20));
         accidentDataArrayList.add(new AccidentData("Delhi", "Delhi", "Connaught Place",28.63,77.21, 23));
@@ -101,62 +96,55 @@ public class MainActivity extends AppCompatActivity
                 locationSuccess();
             }
         }
+        ViewPager vp = findViewById(R.id.vpFrags);
+        vp.setAdapter(new MyPagerAdapter(getSupportFragmentManager()));
+        TabLayout tabLayout = findViewById(R.id.tabLayout);
+        tabLayout.setupWithViewPager(vp);
     }
 
+    class MyPagerAdapter extends FragmentPagerAdapter {
 
-    @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.about_us) {
-            return true;
+        public MyPagerAdapter(FragmentManager fm) {
+            super(fm);
         }
 
-        return super.onOptionsItemSelected(item);
-    }
-
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.dashboard) {
-            // Handle the camera action
-        } else if (id == R.id.emergency_contacts) {
-
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.frag_container,new Frag_EmergencyContact().newInstance(latitude,longitude))
-                    .commit();
-
-        } else if (id == R.id.near_by_places) {
-
-        } else if (id == R.id.about_us){
-
+        @Nullable
+        @Override
+        public CharSequence getPageTitle(int position) {
+            switch (position) {
+                case 0:
+                    return "Dashboard";
+                case 1:
+                    return "Emergency Contacts";
+                case 2:
+                    return "Near Places";
+            }
+            return "";
+        }
+        @Override
+        public Fragment getItem(int i) {
+            switch (i) {
+                case 0:
+                    return new Frag_Dashboard();
+                case 1:
+                    return new Frag_EmergencyContact();
+                case 2:
+                    return new Frag_NearPlaces();
+            }
+            return null;
         }
 
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
+        @Override
+        public int getCount() {
+            return 3;
+        }
     }
 
     @Override
     public void onLocationChanged(Location location) {
+
+        Log.e("TAG", "long: " + location.getLongitude());
+        Log.e("TAG", "lat " + location.getLatitude());
 
         latitude = Double.valueOf((""+location.getLatitude()).substring(0,5));
         longitude = Double.valueOf((""+location.getLongitude()).substring(0,5));
@@ -164,18 +152,18 @@ public class MainActivity extends AppCompatActivity
         Log.e("TAG", "long: " + longitude);
         Log.e("TAG", "lat " + latitude);
 
-        tvPostalCOde.setText(""+latitude);
-        tvKnownName.setText(""+longitude);
+    //    tvPostalCOde.setText(""+latitude);
+    //    tvKnownName.setText(""+longitude);
 
         for(AccidentData data: accidentDataArrayList)
         {
             Log.e("TAG", "for lat: " + data.getLocality());
             if(longitude == data.getLongitude() && latitude == data.getLatitude())
             {
-                tvAddress.setText(""+data.getPercentage());
-                tvCity.setText(data.getCity());
-                tvState.setText(data.getState());
-                tvCountry.setText(data.getLocality());
+//                tvAddress.setText(""+data.getPercentage());
+//                tvCity.setText(data.getCity());
+//                tvState.setText(data.getState());
+//                tvCountry.setText(data.getLocality());
 
                 if(data.getPercentage() >= 50) {
                     notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
@@ -218,6 +206,10 @@ public class MainActivity extends AppCompatActivity
             } else {
                 locationSuccess();
             }
+        } else {
+
+            Toast.makeText(this,"App Need Permissions to work!!!",Toast.LENGTH_LONG).show();
+            finish();
         }
     }
 
