@@ -16,7 +16,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -26,29 +25,19 @@ import java.util.List;
 
 public class Frag_EmergencyContact extends Fragment {
 
+
     List<ContactData> contactDataList = new ArrayList<>();
     ContactAdaptor contactAdaptor;
     FloatingActionButton fabAdd;
     EditText etName;
     EditText etNumber;
     RecyclerView rvContacts;
-
     ImageButton btnPolice;
     ImageButton btnAmbulance;
     ImageButton btnWomen;
     ImageButton btnFire;
     ImageButton btnChild;
     ImageButton btnDisaster;
-
-    Fragment newInstance(double latitude, double longitude) {
-
-        Frag_EmergencyContact fragEmergencyContact = new Frag_EmergencyContact();
-        Bundle bundle = new Bundle();
-        bundle.putDouble("lat", latitude);
-        bundle.putDouble("long", longitude);
-        fragEmergencyContact.setArguments(bundle);
-        return fragEmergencyContact;
-    }
 
     @Nullable
     @Override
@@ -71,12 +60,11 @@ public class Frag_EmergencyContact extends Fragment {
         rvContacts = view.findViewById(R.id.rvContacts);
         rvContacts.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        if (getArguments() != null)
-            contactAdaptor = new ContactAdaptor(contactDataList, getContext(), getArguments().getDouble("lat"), getArguments().getDouble("long"), true);
-        else
-            contactAdaptor = new ContactAdaptor(contactDataList, getContext(), 0, 0, false);
+        // if (getArguments() != null)
+        contactAdaptor = new ContactAdaptor(contactDataList, getContext(), true);
+//        else
+//            contactAdaptor = new ContactAdaptor(contactDataList, getContext(), 0, 0, false);
 
-        rvContacts.setAdapter(contactAdaptor);
         final View alertview = LayoutInflater.from(getContext()).inflate(R.layout.layout_add, null, true);
 
         final AlertDialog dialog = new AlertDialog.Builder(getContext())
@@ -95,10 +83,20 @@ public class Frag_EmergencyContact extends Fragment {
                         etName.setText("");
 
                         if (number.length() == 10) {
-                            ContactData contactData = new ContactData(name, number);
-                            contactDataList.add(contactData);
-                           // ContactApplication.getDB().getContactDAO().inertTask(contactData);
-                            contactAdaptor.notifyDataSetChanged();
+                            boolean isAvailable = false;
+                            for (ContactData contact : contactDataList) {
+                                if (contact.getNumber().equals(number)) {
+                                    isAvailable = true;
+                                    Snackbar.make(view, "NUMBER ALREADY EXISTS", Toast.LENGTH_SHORT).show();
+                                    break;
+                                }
+                            }
+                            if (!isAvailable) {
+                                ContactData contactData = new ContactData(name, number);
+                                contactDataList.add(contactData);
+                                // ContactApplication.getDB().getContactDAO().inertTask(contactData);
+                                contactAdaptor.notifyDataSetChanged();
+                            }
                         } else
                             Snackbar.make(view, "Invalid Number", Toast.LENGTH_SHORT).show();
                     }
@@ -116,7 +114,7 @@ public class Frag_EmergencyContact extends Fragment {
             public void onClick(View v) {
                 String number = "181";
                 Intent intent = new Intent();
-                intent.setData(Uri.parse("tel:"+number));
+                intent.setData(Uri.parse("tel:" + number));
                 intent.setAction(Intent.ACTION_DIAL);
                 startActivity(intent);
             }
@@ -126,7 +124,7 @@ public class Frag_EmergencyContact extends Fragment {
             public void onClick(View v) {
                 String number = "100";
                 Intent intent = new Intent();
-                intent.setData(Uri.parse("tel:"+number));
+                intent.setData(Uri.parse("tel:" + number));
                 intent.setAction(Intent.ACTION_DIAL);
                 startActivity(intent);
             }
@@ -136,7 +134,7 @@ public class Frag_EmergencyContact extends Fragment {
             public void onClick(View v) {
                 String number = "108";
                 Intent intent = new Intent();
-                intent.setData(Uri.parse("tel:"+number));
+                intent.setData(Uri.parse("tel:" + number));
                 intent.setAction(Intent.ACTION_DIAL);
                 startActivity(intent);
             }
@@ -146,7 +144,7 @@ public class Frag_EmergencyContact extends Fragment {
             public void onClick(View v) {
                 String number = "1098";
                 Intent intent = new Intent();
-                intent.setData(Uri.parse("tel:"+number));
+                intent.setData(Uri.parse("tel:" + number));
                 intent.setAction(Intent.ACTION_DIAL);
                 startActivity(intent);
             }
@@ -156,7 +154,7 @@ public class Frag_EmergencyContact extends Fragment {
             public void onClick(View v) {
                 String number = "101";
                 Intent intent = new Intent();
-                intent.setData(Uri.parse("tel:"+number));
+                intent.setData(Uri.parse("tel:" + number));
                 intent.setAction(Intent.ACTION_DIAL);
                 startActivity(intent);
             }
@@ -166,13 +164,15 @@ public class Frag_EmergencyContact extends Fragment {
             public void onClick(View v) {
                 String number = "102";
                 Intent intent = new Intent();
-                intent.setData(Uri.parse("tel:"+number));
+                intent.setData(Uri.parse("tel:" + number));
                 intent.setAction(Intent.ACTION_DIAL);
                 startActivity(intent);
             }
         });
+        rvContacts.setAdapter(contactAdaptor);
 
         return view;
     }
+
 
 }

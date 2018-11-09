@@ -39,8 +39,8 @@ public class Frag_Dashboard extends Fragment implements LocationListener{
     TextView tvKnown;
     TextView tvCountry;
 
-    double longitude;
-    double latitude;
+    static double longitude;
+    static rdouble latitude;
 
     int currentTime;
 

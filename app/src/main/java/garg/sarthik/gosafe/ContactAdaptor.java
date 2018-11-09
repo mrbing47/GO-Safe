@@ -20,15 +20,11 @@ public class ContactAdaptor extends RecyclerView.Adapter<ContactAdaptor.ViewHold
 
     List<ContactData> contactDataList;
     Context ctx;
-    double latitude;
-    double longitude;
     boolean isLatLongOk;
 
-    public ContactAdaptor(List<ContactData> contactDataList, Context ctx, double latitude, double longitude, boolean isLatLongOk) {
+    public ContactAdaptor(List<ContactData> contactDataList, Context ctx,  boolean isLatLongOk) {
         this.contactDataList = contactDataList;
         this.ctx = ctx;
-        this.latitude = latitude;
-        this.longitude = longitude;
         this.isLatLongOk = isLatLongOk;
     }
 
@@ -76,14 +72,16 @@ public class ContactAdaptor extends RecyclerView.Adapter<ContactAdaptor.ViewHold
             @Override
             public void onClick(View v) {
                 if(isLatLongOk)
+
                 {
-                    String message = "Hello,I am in Danger\n\nMy current location is: "+"http://maps.google.com/maps?f=q&q=("+latitude+","+longitude+")"+"\nReach out to me as soon as possible";
+                    String message = "Hello,I am in Danger\n\nMy current location is: "+"http://maps.google.com/maps?f=q&q=("+Frag_Dashboard.latitude+","+Frag_Dashboard.longitude+")"+"\nReach out to me as soon as possible";
                     Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("sms:" + contactData.getNumber()));
                     intent.putExtra("sms_body", message);
                     ctx.startActivity(intent);
                 }
                 else
                     Toast.makeText(ctx,"Location Not Valid",Toast.LENGTH_LONG).show();
+
             }
         });
     }
